@@ -2,6 +2,8 @@ package org.knowm.xchange.bitfinex.v1.dto.trade;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.Date;
+
 public class BitfinexPastTradesRequest {
 
   @JsonProperty("request")
@@ -14,7 +16,7 @@ public class BitfinexPastTradesRequest {
   protected String symbol;
 
   @JsonProperty("timestamp")
-  protected long timestamp;
+  protected Date timestamp;
 
   @JsonProperty("limit_trades")
   protected int limitTrades;
@@ -32,7 +34,7 @@ public class BitfinexPastTradesRequest {
     this.request = "/v1/mytrades";
     this.nonce = nonce;
     this.symbol = symbol;
-    this.timestamp = timestamp;
+    this.timestamp = new Date(timestamp);
     this.limitTrades = limitTrades;
   }
 }
