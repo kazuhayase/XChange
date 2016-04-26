@@ -1,17 +1,12 @@
 package org.knowm.xchange.bitfinex.v1.service.polling;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.bitfinex.v1.dto.BitfinexException;
-import org.knowm.xchange.bitfinex.v1.dto.account.BitfinexBalancesRequest;
-import org.knowm.xchange.bitfinex.v1.dto.account.BitfinexBalancesResponse;
-import org.knowm.xchange.bitfinex.v1.dto.account.BitfinexMarginInfosRequest;
-import org.knowm.xchange.bitfinex.v1.dto.account.BitfinexMarginInfosResponse;
-import org.knowm.xchange.bitfinex.v1.dto.account.BitfinexWithdrawalRequest;
-import org.knowm.xchange.bitfinex.v1.dto.account.BitfinexWithdrawalResponse;
+import org.knowm.xchange.bitfinex.v1.dto.account.*;
 import org.knowm.xchange.exceptions.ExchangeException;
+
+import java.io.IOException;
+import java.math.BigDecimal;
 
 public class BitfinexAccountServiceRaw extends BitfinexBasePollingService {
 
@@ -52,5 +47,16 @@ public class BitfinexAccountServiceRaw extends BitfinexBasePollingService {
     BitfinexWithdrawalResponse[] withdrawRepsonse = bitfinex.withdraw(apiKey, payloadCreator, signatureCreator,
         new BitfinexWithdrawalRequest(String.valueOf(exchange.getNonceFactory().createValue()), withdrawType, walletSelected, amount, address));
     return withdrawRepsonse[0].getWithdrawalId();
+  }
+
+  public BitfinexPastTransactionsResponse[] getBitfinexTransactionHistory(String currency, String method, Long since, Long until, int limit) throws IOException {
+
+    try {
+      BitfinexPastTransactionsResponse[] trades = bitfinex.pastTransactions(apiKey, payloadCreator, signatureCreator,
+              new BitfinexPastTransactionsRequest(String.valueOf(exchange.getNonceFactory().createValue()), currency, method, since, until, limit));
+      return trades;
+    } catch (BitfinexException e) {
+      throw new ExchangeException(e.getMessage());
+    }
   }
 }

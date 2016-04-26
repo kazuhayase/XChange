@@ -106,4 +106,7 @@ public interface BitfinexAuthenticated extends Bitfinex {
   String accountInfos(@HeaderParam("X-BFX-APIKEY") String apiKey, @HeaderParam("X-BFX-PAYLOAD") ParamsDigest payload,
                       @HeaderParam("X-BFX-SIGNATURE") ParamsDigest signature, BitfinexNonceOnlyRequest nonceOnlyRequest) throws IOException, BitfinexException;
 
+  @POST
+  BitfinexPastTransactionsResponse[] pastTransactions(@HeaderParam("X-BFX-APIKEY") String apiKey, @HeaderParam("X-BFX-PAYLOAD") ParamsDigest payload,
+                                                      @HeaderParam("X-BFX-SIGNATURE") ParamsDigest signature, BitfinexPastTransactionsRequest pastTransactionsRequest) throws IOException, BitfinexException;
 }
