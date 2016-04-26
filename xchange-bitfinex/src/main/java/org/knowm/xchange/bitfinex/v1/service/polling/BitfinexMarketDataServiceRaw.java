@@ -1,16 +1,12 @@
 package org.knowm.xchange.bitfinex.v1.service.polling;
 
-import java.io.IOException;
-import java.util.Collection;
-
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.bitfinex.v1.dto.BitfinexException;
-import org.knowm.xchange.bitfinex.v1.dto.marketdata.BitfinexDepth;
-import org.knowm.xchange.bitfinex.v1.dto.marketdata.BitfinexLend;
-import org.knowm.xchange.bitfinex.v1.dto.marketdata.BitfinexLendDepth;
-import org.knowm.xchange.bitfinex.v1.dto.marketdata.BitfinexTicker;
-import org.knowm.xchange.bitfinex.v1.dto.marketdata.BitfinexTrade;
+import org.knowm.xchange.bitfinex.v1.dto.marketdata.*;
 import org.knowm.xchange.exceptions.ExchangeException;
+
+import java.io.IOException;
+import java.util.Collection;
 
 /**
  * <p>
@@ -91,6 +87,15 @@ public class BitfinexMarketDataServiceRaw extends BitfinexBasePollingService {
 
     try {
       return bitfinex.getSymbols();
+    } catch (BitfinexException e) {
+      throw new ExchangeException("Bitfinex returned an error: " + e.getMessage());
+    }
+  }
+
+  public BitfinexSymbolInfo[] getBitfinexSymbolInfo() throws IOException {
+
+    try {
+      return bitfinex.getSymbolDetails();
     } catch (BitfinexException e) {
       throw new ExchangeException("Bitfinex returned an error: " + e.getMessage());
     }
