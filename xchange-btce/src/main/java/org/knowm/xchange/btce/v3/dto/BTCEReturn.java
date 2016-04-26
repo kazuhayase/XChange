@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class BTCEReturn<V> {
 
   private final boolean success;
-  private final V returnValue;
+  protected  V returnValue;
   private final String error;
 
   /**

@@ -1,22 +1,13 @@
 package org.knowm.xchange.btce.v3.service.polling;
 
+import org.knowm.xchange.Exchange;
+import org.knowm.xchange.btce.v3.BTCEAuthenticated;
+import org.knowm.xchange.btce.v3.dto.trade.*;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
-import org.knowm.xchange.Exchange;
-import org.knowm.xchange.btce.v3.BTCEAuthenticated;
-import org.knowm.xchange.btce.v3.dto.trade.BTCECancelOrderResult;
-import org.knowm.xchange.btce.v3.dto.trade.BTCECancelOrderReturn;
-import org.knowm.xchange.btce.v3.dto.trade.BTCEOpenOrdersReturn;
-import org.knowm.xchange.btce.v3.dto.trade.BTCEOrder;
-import org.knowm.xchange.btce.v3.dto.trade.BTCEPlaceOrderResult;
-import org.knowm.xchange.btce.v3.dto.trade.BTCEPlaceOrderReturn;
-import org.knowm.xchange.btce.v3.dto.trade.BTCETradeHistoryResult;
-import org.knowm.xchange.btce.v3.dto.trade.BTCETradeHistoryReturn;
-import org.knowm.xchange.btce.v3.dto.trade.BTCETransHistoryResult;
-import org.knowm.xchange.btce.v3.dto.trade.BTCETransHistoryReturn;
 
 /**
  * Author: brox Since: 2014-02-13
@@ -25,6 +16,7 @@ import org.knowm.xchange.btce.v3.dto.trade.BTCETransHistoryReturn;
 public class BTCETradeServiceRaw extends BTCEBasePollingService {
 
   private static final String MSG_NO_TRADES = "no trades";
+  private static final String MSG_NO_TRANSACTIONS = "no transactions";
   private static final String MSG_BAD_STATUS = "bad status";
 
   /**
@@ -124,7 +116,7 @@ public class BTCETradeServiceRaw extends BTCEBasePollingService {
         order, since, end);
     String error = btceTransHistory.getError();
     // BTC-e returns this error if it finds no trades matching the criteria
-    if (MSG_NO_TRADES.equals(error)) {
+    if (MSG_NO_TRANSACTIONS.equals(error)) {
       return Collections.emptyMap();
     }
 

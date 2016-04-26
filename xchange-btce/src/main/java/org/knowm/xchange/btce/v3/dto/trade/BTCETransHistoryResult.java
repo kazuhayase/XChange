@@ -1,14 +1,14 @@
 package org.knowm.xchange.btce.v3.dto.trade;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.math.BigDecimal;
 import java.text.MessageFormat;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author Peter N. Steinmetz Date: 3/30/15 Time: 3:19 PM
  */
-public class BTCETransHistoryResult {
+public class BTCETransHistoryResult implements Comparable<BTCETransHistoryResult>{
 
   private final Type type;
   private final BigDecimal amount;
@@ -16,6 +16,8 @@ public class BTCETransHistoryResult {
   private final String description;
   private final Status status;
   private final Long timestamp;
+
+  private Long id;
 
   /**
    * Constructor
@@ -62,6 +64,14 @@ public class BTCETransHistoryResult {
     return timestamp;
   }
 
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long newId) {
+    this.id = newId;
+  }
+
   @Override
   public String toString() {
     return MessageFormat.format("BTCETransHistory[type={0}, amount={1}, currency=''{2}'', description=''{3}'', status={4}, timestamp={5}]", type,
@@ -80,5 +90,15 @@ public class BTCETransHistoryResult {
    */
   public static enum Status {
     entered, waiting, complete
+  }
+
+  @Override
+  public int compareTo(BTCETransHistoryResult other) {
+    //compare name
+    if (other == null || other.id == null)
+      return 1;
+    if (this.id == null)
+      return -1;
+    return this.id.compareTo(other.id);
   }
 }

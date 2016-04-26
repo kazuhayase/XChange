@@ -1,14 +1,14 @@
 package org.knowm.xchange.btce.v3.dto.trade;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.math.BigDecimal;
 import java.text.MessageFormat;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @author Raphael Voellmy
  */
-public class BTCETradeHistoryResult {
+public class BTCETradeHistoryResult implements Comparable<BTCETradeHistoryResult>{
 
   private final String pair;
   private final Type type;
@@ -21,6 +21,8 @@ public class BTCETradeHistoryResult {
    */
   private final int isYourOrder;
   private final Long timestamp;
+
+  private Long id;
 
   /**
    * Constructor
@@ -81,14 +83,34 @@ public class BTCETradeHistoryResult {
     return isYourOrder == 1;
   }
 
+  public Long getId() {
+
+    return id;
+  }
+
+  public void setId(Long newId) {
+
+    this.id = newId;
+  }
+
   @Override
   public String toString() {
 
-    return MessageFormat.format("BTCEOwnTransaction[pair=''{0}'', type={1}, amount={2}, rate={3}, timestamp={4}, orderId={5}, isYourOrder={6}]", pair,
+    return MessageFormat.format("BTCEOwnTrade[pair=''{0}'', type={1}, amount={2}, rate={3}, timestamp={4}, orderId={5}, isYourOrder={6}]", pair,
         type, amount, rate, timestamp, orderId, isYourOrder);
   }
 
   public static enum Type {
     buy, sell
+  }
+
+  @Override
+  public int compareTo(BTCETradeHistoryResult other) {
+    //compare name
+    if (other == null || other.id == null)
+      return 1;
+    if (this.id == null)
+      return -1;
+    return this.id.compareTo(other.id);
   }
 }
