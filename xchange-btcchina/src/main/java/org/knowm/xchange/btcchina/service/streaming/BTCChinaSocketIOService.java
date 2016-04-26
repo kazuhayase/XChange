@@ -1,28 +1,24 @@
 package org.knowm.xchange.btcchina.service.streaming;
 
-import static org.knowm.xchange.btcchina.service.streaming.BTCChinaSocketIOClientBuilder.EVENT_ACCOUNT_INFO;
-import static org.knowm.xchange.btcchina.service.streaming.BTCChinaSocketIOClientBuilder.EVENT_GROUPORDER;
-import static org.knowm.xchange.btcchina.service.streaming.BTCChinaSocketIOClientBuilder.EVENT_ORDER;
-import static org.knowm.xchange.btcchina.service.streaming.BTCChinaSocketIOClientBuilder.EVENT_TICKER;
-import static org.knowm.xchange.btcchina.service.streaming.BTCChinaSocketIOClientBuilder.EVENT_TRADE;
-
-import java.net.URI;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-
-import org.java_websocket.WebSocket.READYSTATE;
-import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.Socket;
+import org.java_websocket.WebSocket.READYSTATE;
+import org.json.JSONObject;
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.btcchina.BTCChinaExchange;
 import org.knowm.xchange.service.BaseExchangeService;
 import org.knowm.xchange.service.streaming.ExchangeEvent;
 import org.knowm.xchange.service.streaming.ExchangeEventType;
 import org.knowm.xchange.service.streaming.StreamingExchangeService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.net.URI;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
+
+import static org.knowm.xchange.btcchina.service.streaming.BTCChinaSocketIOClientBuilder.*;
 
 public class BTCChinaSocketIOService extends BaseExchangeService implements StreamingExchangeService {
 
@@ -75,6 +71,15 @@ public class BTCChinaSocketIOService extends BaseExchangeService implements Stre
   public ExchangeEvent getNextEvent() throws InterruptedException {
 
     return consumerEventQueue.take();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public ExchangeEvent getNextEvent(long timeout, TimeUnit unit) throws InterruptedException {
+
+    return consumerEventQueue.poll(timeout, unit);
   }
 
   /**

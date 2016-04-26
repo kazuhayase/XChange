@@ -1,5 +1,15 @@
 package org.knowm.xchange.service.streaming;
 
+import org.java_websocket.WebSocket.READYSTATE;
+import org.java_websocket.framing.Framedata.Opcode;
+import org.java_websocket.framing.FramedataImpl1;
+import org.knowm.xchange.Exchange;
+import org.knowm.xchange.exceptions.ExchangeException;
+import org.knowm.xchange.service.BaseExchangeService;
+import org.knowm.xchange.utils.Assert;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
@@ -8,17 +18,6 @@ import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
-
-import org.java_websocket.WebSocket.READYSTATE;
-import org.java_websocket.framing.Framedata.Opcode;
-import org.java_websocket.framing.FramedataImpl1;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.knowm.xchange.Exchange;
-import org.knowm.xchange.exceptions.ExchangeException;
-import org.knowm.xchange.service.BaseExchangeService;
-import org.knowm.xchange.utils.Assert;
 
 /**
  * <p>
@@ -92,6 +91,13 @@ public abstract class BaseWebSocketExchangeService extends BaseExchangeService i
   public ExchangeEvent getNextEvent() throws InterruptedException {
 
     ExchangeEvent event = consumerEventQueue.take();
+    return event;
+  }
+
+  @Override
+  public ExchangeEvent getNextEvent(long timeout, TimeUnit unit) throws InterruptedException {
+
+    ExchangeEvent event = consumerEventQueue.poll(timeout, unit);
     return event;
   }
 

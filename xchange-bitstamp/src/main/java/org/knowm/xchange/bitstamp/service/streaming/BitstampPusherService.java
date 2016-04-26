@@ -1,21 +1,11 @@
 package org.knowm.xchange.bitstamp.service.streaming;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-
-import org.java_websocket.WebSocket.READYSTATE;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pusher.client.Pusher;
 import com.pusher.client.channel.Channel;
 import com.pusher.client.channel.SubscriptionEventListener;
+import org.java_websocket.WebSocket.READYSTATE;
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.bitstamp.BitstampAdapters;
 import org.knowm.xchange.bitstamp.dto.marketdata.BitstampStreamingOrderBook;
@@ -31,6 +21,16 @@ import org.knowm.xchange.service.streaming.DefaultExchangeEvent;
 import org.knowm.xchange.service.streaming.ExchangeEvent;
 import org.knowm.xchange.service.streaming.ExchangeEventType;
 import org.knowm.xchange.service.streaming.StreamingExchangeService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
@@ -114,6 +114,19 @@ public class BitstampPusherService extends BitstampBasePollingService implements
   public ExchangeEvent getNextEvent() throws InterruptedException {
 
     return consumerEventQueue.take();
+  }
+
+  /**
+   * <p>
+   * Returns next event in consumer event queue, then removes it.
+   * </p>
+   *
+   * @return An ExchangeEvent
+   */
+  @Override
+  public ExchangeEvent getNextEvent(long timeout, TimeUnit unit) throws InterruptedException {
+
+    return consumerEventQueue.poll(timeout, unit);
   }
 
   /**

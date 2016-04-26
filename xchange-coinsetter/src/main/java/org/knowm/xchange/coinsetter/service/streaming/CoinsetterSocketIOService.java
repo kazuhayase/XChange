@@ -1,10 +1,7 @@
 package org.knowm.xchange.coinsetter.service.streaming;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-
+import io.socket.SocketIOException;
 import org.java_websocket.WebSocket.READYSTATE;
-
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.coinsetter.CoinsetterAdapters;
 import org.knowm.xchange.coinsetter.dto.marketdata.CoinsetterPair;
@@ -20,7 +17,9 @@ import org.knowm.xchange.service.streaming.ExchangeEvent;
 import org.knowm.xchange.service.streaming.ExchangeEventType;
 import org.knowm.xchange.service.streaming.StreamingExchangeService;
 
-import io.socket.SocketIOException;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Coinsetter streaming service implementation over Websockets API.
@@ -106,6 +105,15 @@ public class CoinsetterSocketIOService extends CoinsetterSocketIOServiceRaw impl
   public ExchangeEvent getNextEvent() throws InterruptedException {
 
     return consumerEventQueue.take();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public ExchangeEvent getNextEvent(long timeout, TimeUnit unit) throws InterruptedException {
+
+    return consumerEventQueue.poll(timeout, unit);
   }
 
   /**

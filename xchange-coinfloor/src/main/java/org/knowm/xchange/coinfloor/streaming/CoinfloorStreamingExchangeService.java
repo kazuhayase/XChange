@@ -1,14 +1,5 @@
 package org.knowm.xchange.coinfloor.streaming;
 
-import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.knowm.xchange.Exchange;
@@ -26,6 +17,15 @@ import org.knowm.xchange.service.streaming.BaseWebSocketExchangeService;
 import org.knowm.xchange.service.streaming.ExchangeEvent;
 import org.knowm.xchange.service.streaming.ExchangeEventType;
 import org.knowm.xchange.service.streaming.StreamingExchangeService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author obsessiveOrange
@@ -286,6 +286,12 @@ public class CoinfloorStreamingExchangeService extends BaseWebSocketExchangeServ
   public CoinfloorExchangeEvent getNextEvent() throws InterruptedException {
 
     return (CoinfloorExchangeEvent) super.getNextEvent();
+  }
+
+  @Override
+  public ExchangeEvent getNextEvent(long timeout, TimeUnit unit) throws InterruptedException {
+
+    return (CoinfloorExchangeEvent) super.getNextEvent(timeout, unit);
   }
 
   public CoinfloorExchangeEvent getNextSystemEvent() throws InterruptedException {
