@@ -47,6 +47,12 @@ public interface BitfinexAuthenticated extends Bitfinex {
       throws IOException, BitfinexException;
 
   @POST
+  @Path("order/cancel/all")
+  BitfinexCancelOrderMultiResponse cancelAllOrders(@HeaderParam("X-BFX-APIKEY") String apiKey, @HeaderParam("X-BFX-PAYLOAD") ParamsDigest payload,
+                                              @HeaderParam("X-BFX-SIGNATURE") ParamsDigest signature,
+                                              BitfinexNonceOnlyRequest nonceOnlyRequest) throws IOException, BitfinexException;
+
+  @POST
   @Path("offer/cancel")
   BitfinexOfferStatusResponse cancelOffer(@HeaderParam("X-BFX-APIKEY") String apiKey, @HeaderParam("X-BFX-PAYLOAD") ParamsDigest payload,
       @HeaderParam("X-BFX-SIGNATURE") ParamsDigest signature, BitfinexCancelOfferRequest cancelOfferRequest) throws IOException, BitfinexException;

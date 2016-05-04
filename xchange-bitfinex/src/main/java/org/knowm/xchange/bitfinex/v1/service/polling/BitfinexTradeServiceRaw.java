@@ -267,4 +267,14 @@ public class BitfinexTradeServiceRaw extends BitfinexBasePollingService {
       throw new ExchangeException(e.getMessage());
     }
   }
+
+  public boolean cancelAllBitfinexOrders() throws IOException {
+    try {
+      bitfinex.cancelAllOrders(apiKey, payloadCreator, signatureCreator, new BitfinexNonceOnlyRequest("v1/order/cancel/all",
+              String.valueOf(exchange.getNonceFactory().createValue())));
+      return true;
+    } catch (BitfinexException e) {
+      throw new ExchangeException(e.getMessage());
+    }
+  }
 }
