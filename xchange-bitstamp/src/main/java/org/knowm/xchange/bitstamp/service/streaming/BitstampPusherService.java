@@ -177,7 +177,7 @@ public class BitstampPusherService extends BitstampBasePollingService implements
     }
   }
 
-  private void bindOrderData(Channel chan) {
+  private void bindOrderData(final Channel chan) {
 
     SubscriptionEventListener listener = new SubscriptionEventListener() {
 
@@ -186,7 +186,7 @@ public class BitstampPusherService extends BitstampBasePollingService implements
 
         ExchangeEvent xevt = null;
         try {
-          OrderBook snapshot = parseOrderBook(data);
+          OrderBook snapshot = parseOrderBook(data, chan.getName().contains("btceur") ? CurrencyPair.BTC_EUR : CurrencyPair.BTC_USD);
           xevt = new DefaultExchangeEvent(ExchangeEventType.SUBSCRIBE_ORDERS, data, snapshot);
         } catch (IOException e) {
           logger.error("JSON stream error", e);
@@ -199,7 +199,7 @@ public class BitstampPusherService extends BitstampBasePollingService implements
     chan.bind("data", listener);
   }
 
-  private void bindDiffOrderData(Channel chan) {
+  private void bindDiffOrderData(final Channel chan) {
 
     SubscriptionEventListener listener = new SubscriptionEventListener() {
 
@@ -208,7 +208,7 @@ public class BitstampPusherService extends BitstampBasePollingService implements
 
         ExchangeEvent xevt = null;
         try {
-          OrderBook delta = parseOrderBook(data);
+          OrderBook delta = parseOrderBook(data,chan.getName().contains("btceur") ? CurrencyPair.BTC_EUR : CurrencyPair.BTC_USD);
           xevt = new DefaultExchangeEvent(ExchangeEventType.DEPTH, data, delta);
         } catch (IOException e) {
           logger.error("JSON stream error", e);
@@ -221,16 +221,16 @@ public class BitstampPusherService extends BitstampBasePollingService implements
     chan.bind("data", listener);
   }
 
-  private OrderBook parseOrderBook(String rawJson) throws IOException {
+  private OrderBook parseOrderBook(String rawJson, CurrencyPair pair) throws IOException {
 
     BitstampStreamingOrderBook bitstampOrderBook = streamObjectMapper.readValue(rawJson, BitstampStreamingOrderBook.class);
 
-    List<LimitOrder> asks = BitstampAdapters.createOrders(CurrencyPair.BTC_USD, Order.OrderType.ASK, bitstampOrderBook.getAsks());
-    List<LimitOrder> bids = BitstampAdapters.createOrders(CurrencyPair.BTC_USD, Order.OrderType.BID, bitstampOrderBook.getBids());
+    List<LimitOrder> asks = BitstampAdapters.createOrders(pair, Order.OrderType.ASK, bitstampOrderBook.getAsks());
+    List<LimitOrder> bids = BitstampAdapters.createOrders(pair, Order.OrderType.BID, bitstampOrderBook.getBids());
     return new OrderBook(null, asks, bids);
   }
 
-  private void bindTradeData(Channel chan) {
+  private void bindTradeData(final Channel chan) {
 
     SubscriptionEventListener listener = new SubscriptionEventListener() {
 
@@ -239,7 +239,7 @@ public class BitstampPusherService extends BitstampBasePollingService implements
 
         ExchangeEvent exchangeEvent = null;
         try {
-          Trade trade = parseTrade(data);
+          Trade trade = parseTrade(data, chan.getName().contains("btceur") ? CurrencyPair.BTC_EUR : CurrencyPair.BTC_USD);
           exchangeEvent = new DefaultExchangeEvent(ExchangeEventType.TRADE, data, trade);
         } catch (IOException e) {
           logger.error("JSON stream error", e);
@@ -252,10 +252,10 @@ public class BitstampPusherService extends BitstampBasePollingService implements
     chan.bind("trade", listener);
   }
 
-  private Trade parseTrade(String rawJson) throws IOException {
+  private Trade parseTrade(String rawJson, CurrencyPair pair) throws IOException {
 
     BitstampTransaction transaction = streamObjectMapper.readValue(rawJson, BitstampStreamingTransaction.class);
-    return new Trade(null, transaction.getAmount(), CurrencyPair.BTC_USD, transaction.getPrice(), null, String.valueOf(transaction.getTid()));
+    return new Trade(null, transaction.getAmount(), pair, transaction.getPrice(), null, String.valueOf(transaction.getTid()));
   }
 
   private void addToEventQueue(ExchangeEvent event) {
