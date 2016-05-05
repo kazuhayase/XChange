@@ -1,16 +1,16 @@
 package org.knowm.xchange.okcoin.service.streaming;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-
 import org.java_websocket.WebSocket.READYSTATE;
-
 import org.knowm.xchange.ExchangeSpecification;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.okcoin.OkCoinExchange;
 import org.knowm.xchange.service.streaming.ExchangeEvent;
 import org.knowm.xchange.service.streaming.ExchangeStreamingConfiguration;
 import org.knowm.xchange.service.streaming.StreamingExchangeService;
+
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 public class OkCoinStreamingExchangeService implements StreamingExchangeService {
   private final WebSocketBase socketBase;
@@ -50,6 +50,11 @@ public class OkCoinStreamingExchangeService implements StreamingExchangeService 
   @Override
   public ExchangeEvent getNextEvent() throws InterruptedException {
     return eventQueue.take();
+  }
+
+  @Override
+  public ExchangeEvent getNextEvent(long timeout, TimeUnit unit) throws InterruptedException {
+    return eventQueue.poll(timeout, unit);
   }
 
   /**

@@ -291,7 +291,7 @@ public class CoinfloorStreamingExchangeService extends BaseWebSocketExchangeServ
   @Override
   public ExchangeEvent getNextEvent(long timeout, TimeUnit unit) throws InterruptedException {
 
-    return (CoinfloorExchangeEvent) super.getNextEvent(timeout, unit);
+    return super.getNextEvent(timeout, unit);
   }
 
   public CoinfloorExchangeEvent getNextSystemEvent() throws InterruptedException {

@@ -1,28 +1,23 @@
 package org.knowm.xchange.huobi.service.streaming;
 
-import static org.knowm.xchange.huobi.service.streaming.HuobiSocketIOAdapters.adaptSymbol;
-
-import java.util.HashSet;
-import java.util.Set;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-
-import org.java_websocket.WebSocket.READYSTATE;
-
 import com.google.gson.Gson;
+import io.socket.SocketIOException;
+import org.java_websocket.WebSocket.READYSTATE;
 import org.knowm.xchange.ExchangeSpecification;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.huobi.dto.streaming.dto.Percent;
 import org.knowm.xchange.huobi.dto.streaming.request.Request;
 import org.knowm.xchange.huobi.dto.streaming.request.marketdata.Message;
 import org.knowm.xchange.huobi.dto.streaming.request.marketdata.PushType;
-import org.knowm.xchange.service.streaming.DefaultExchangeEvent;
-import org.knowm.xchange.service.streaming.ExchangeEvent;
-import org.knowm.xchange.service.streaming.ExchangeEventType;
-import org.knowm.xchange.service.streaming.ExchangeStreamingConfiguration;
-import org.knowm.xchange.service.streaming.StreamingExchangeService;
+import org.knowm.xchange.service.streaming.*;
 
-import io.socket.SocketIOException;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
+
+import static org.knowm.xchange.huobi.service.streaming.HuobiSocketIOAdapters.adaptSymbol;
 
 public class HuobiStreamingExchangeService implements StreamingExchangeService {
   private HuobiSocketClient client = null;
@@ -124,6 +119,11 @@ public class HuobiStreamingExchangeService implements StreamingExchangeService {
   @Override
   public ExchangeEvent getNextEvent() throws InterruptedException {
     return consumerEventQueue.take();
+  }
+
+  @Override
+  public ExchangeEvent getNextEvent(long timeout, TimeUnit unit) throws InterruptedException {
+    return consumerEventQueue.poll(timeout, unit);
   }
 
   /**

@@ -1,5 +1,15 @@
 package org.knowm.xchange.mexbt.service.streaming;
 
+import org.java_websocket.WebSocket.READYSTATE;
+import org.knowm.xchange.Exchange;
+import org.knowm.xchange.mexbt.MeXBTExchange;
+import org.knowm.xchange.service.streaming.ExchangeEvent;
+import org.knowm.xchange.service.streaming.StreamingExchangeService;
+
+import javax.websocket.ContainerProvider;
+import javax.websocket.DeploymentException;
+import javax.websocket.Session;
+import javax.websocket.WebSocketContainer;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -9,18 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-
-import javax.websocket.ContainerProvider;
-import javax.websocket.DeploymentException;
-import javax.websocket.Session;
-import javax.websocket.WebSocketContainer;
-
-import org.java_websocket.WebSocket.READYSTATE;
-
-import org.knowm.xchange.Exchange;
-import org.knowm.xchange.mexbt.MeXBTExchange;
-import org.knowm.xchange.service.streaming.ExchangeEvent;
-import org.knowm.xchange.service.streaming.StreamingExchangeService;
+import java.util.concurrent.TimeUnit;
 
 public class MeXBTStreamingService implements StreamingExchangeService {
 
@@ -97,6 +96,11 @@ public class MeXBTStreamingService implements StreamingExchangeService {
   @Override
   public ExchangeEvent getNextEvent() throws InterruptedException {
     return exchangeEvents.take();
+  }
+
+  @Override
+  public ExchangeEvent getNextEvent(long timeout, TimeUnit unit) throws InterruptedException {
+    return exchangeEvents.poll(timeout, unit);
   }
 
   /**
