@@ -113,6 +113,7 @@ public interface BitfinexAuthenticated extends Bitfinex {
                       @HeaderParam("X-BFX-SIGNATURE") ParamsDigest signature, BitfinexNonceOnlyRequest nonceOnlyRequest) throws IOException, BitfinexException;
 
   @POST
+  @Path("history/movements")
   BitfinexPastTransactionsResponse[] pastTransactions(@HeaderParam("X-BFX-APIKEY") String apiKey, @HeaderParam("X-BFX-PAYLOAD") ParamsDigest payload,
                                                       @HeaderParam("X-BFX-SIGNATURE") ParamsDigest signature, BitfinexPastTransactionsRequest pastTransactionsRequest) throws IOException, BitfinexException;
 }
