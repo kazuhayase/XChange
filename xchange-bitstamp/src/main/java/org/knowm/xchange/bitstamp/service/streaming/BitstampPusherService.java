@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -227,7 +228,7 @@ public class BitstampPusherService extends BitstampBasePollingService implements
 
     List<LimitOrder> asks = BitstampAdapters.createOrders(pair, Order.OrderType.ASK, bitstampOrderBook.getAsks());
     List<LimitOrder> bids = BitstampAdapters.createOrders(pair, Order.OrderType.BID, bitstampOrderBook.getBids());
-    return new OrderBook(null, asks, bids);
+    return new OrderBook(new Date(bitstampOrderBook.getTimestamp()), asks, bids);
   }
 
   private void bindTradeData(final Channel chan) {
